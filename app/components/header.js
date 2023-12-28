@@ -12,24 +12,40 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
+// const userNavigation = [
+//   { name: "Your Profile", href: "#" },
+//   { name: "Settings", href: "#" },
+//   { name: "Sign out", href: "#" },
+// ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Example() {
+
   const currentPath = usePathname();
 
-  const navigation = [
+
+  const isOnAdminPage = currentPath.startsWith("/admin")
+  const isOnSuperAdminPage = currentPath.startsWith("/super-admin")
+
+  const userNavigation = [
     { name: "Dashboard", link: "/", current: false },
     { name: "Order Food", link: "/order", current: false },
     { name: "My Transactions", link: "/transactions", current: false },
   ];
+  const adminNavigation = [
+    { name: "Dashboard", link: "/admin", current: false },
+    { name: "Today's Order", link: "/admin/orders", current: false },
+    // { name: "My Transactions", link: "/transactions", current: false },
+  ]
+  const superAdmin = [
+    { title: "super admin" },
+    {addUser: "Add-user"}
+  ]
+  let navigation = isOnAdminPage ? adminNavigation : userNavigation;
+ 
   navigation.forEach((item) => {
     if (item.link === currentPath) {
       item.current = true;
@@ -50,7 +66,7 @@ export default function Example() {
                     <div className="flex-shrink-0">
                       <img
                         className="h-10 w-18"
-                        src="http://mmcanteen/assets/images/manorama.jpg"
+                        src="https://flowbite.com/images/logo.svg"
                         alt="Your Company"
                       />
                     </div>

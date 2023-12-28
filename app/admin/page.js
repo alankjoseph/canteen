@@ -1,19 +1,16 @@
-"use client";
-import Image from "next/image";
-import Header from "@/app/components/header";
-import Card from "@/app/components/card";
-import LineChart from "@/app/components/lineChart";
+"use client"
+import React from 'react'
+import Card from '@/app/components/card'
+import LineChart from '@/app/components/lineChart'
 import PieChartPage from "@/app/components/piechart";
 
-export default function Home() {
+export default function page() {
   const items = [
-    { name: "Today's Expense", value: "₹ 453" },
-    { name: "Monthly Expense", value: "₹ 453" },
+    
     { name: "Today's Transaction", value: "4" },
-    { name: "Monthly Transaction", value: "30" },
+    { name: "Today's Order", value: "30" },
+    { name: "Today's revenue", value: "30" },
   ];
-
-  
   return (
     <div className="min-h-full">
       <Card cardItem={items} />
@@ -40,5 +37,6 @@ export default function Home() {
         </div>
       </main>
     </div>
-  );
+  )
 }
+
