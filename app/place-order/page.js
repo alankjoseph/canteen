@@ -1,16 +1,35 @@
 "use client";
-import Header from "@/app/components/header";
 import { useState } from "react";
+import Header from "@/app/components/header";
 import Table from "@/app/components/table";
+
+import {useDispatch} from "react-redux"
+import { addItem } from "../features/cart/cartSlice";
+
 export default function PlaceOrder() {
+
+  const dispatch = useDispatch()
+
   const [buttonClick, setbuttonClick] = useState(false);
+  const [item, setItem] = useState('')
   const sessions = ["--- Select One ---", "BreakFast", "Lunch", "Dinner"];
+  
   const clickHandler = (e) => {
     e.preventDefault();
     setbuttonClick(!buttonClick);
   };
 
+  const addItemToCart = (item)=>{
+    
+    dispatch(addItem(item))
+   
+  }
   const columns = [
+    {
+      name: "ID",
+      selector: (row) => row.id,
+      sortable: true,
+    },
     {
       name: "Item",
       selector: (row) => row.Item,
@@ -26,15 +45,11 @@ export default function PlaceOrder() {
       selector: (row) => row.Availability,
       sortable: true,
     },
-    {
-      name: "Quantity",
-      selector: (row) => row.Quantity,
-      sortable: true,
-    },
+    
     {
       name: "Action",
       cell: (row) => (
-        <button className="bg-[#f2c138] h-8 w-14 text-base text-white font-semibold rounded">
+        <button className="bg-[#f2c138] h-8 w-14 text-base text-white font-semibold rounded" onClick={()=>addItemToCart(row.Item)}>
           Add
         </button>
       ),
@@ -44,15 +59,15 @@ export default function PlaceOrder() {
   const data = [
     {
       id: 1,
-      Item: "Beetlejuice",
-      Price: "23",
+      Item: "Rice and curry",
+      Price: "30",
       Availability: "10",
       Quantity: "1",
     },
     {
-      id: 1,
-      Item: "Beetlejuice",
-      Price: "23",
+      id: 2,
+      Item: "Ayala Fry",
+      Price: "40",
       Availability: "10",
       Quantity: "1",
     },

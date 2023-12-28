@@ -1,7 +1,12 @@
 "use client";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  BellIcon,
+  ShoppingCartIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -23,12 +28,10 @@ function classNames(...classes) {
 }
 
 export default function Example() {
-
   const currentPath = usePathname();
 
-
-  const isOnAdminPage = currentPath.startsWith("/admin")
-  const isOnSuperAdminPage = currentPath.startsWith("/super-admin")
+  const isOnAdminPage = currentPath.startsWith("/admin");
+  const isOnSuperAdminPage = currentPath.startsWith("/super-admin");
 
   const userNavigation = [
     { name: "Dashboard", link: "/", current: false },
@@ -38,14 +41,11 @@ export default function Example() {
   const adminNavigation = [
     { name: "Dashboard", link: "/admin", current: false },
     { name: "Today's Order", link: "/admin/orders", current: false },
-    // { name: "My Transactions", link: "/transactions", current: false },
-  ]
-  const superAdmin = [
-    { title: "super admin" },
-    {addUser: "Add-user"}
-  ]
+    { name: "Stock", link: "/admin/stock", current: false },
+  ];
+  const superAdmin = [{ title: "super admin" }, { addUser: "Add-user" }];
   let navigation = isOnAdminPage ? adminNavigation : userNavigation;
- 
+
   navigation.forEach((item) => {
     if (item.link === currentPath) {
       item.current = true;
@@ -92,15 +92,18 @@ export default function Example() {
                   </div>
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
-                      <button
-                        type="button"
-                        className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      >
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
-
+                      <Link href={"/cart"}>
+                        <button
+                          type="button"
+                          className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white "
+                        >
+                          <span className="absolute -inset-1.5" />
+                          <ShoppingCartIcon
+                            className="h-6 w-6"
+                            aria-hidden="true"
+                          />
+                        </button>
+                      </Link>
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
@@ -127,7 +130,7 @@ export default function Example() {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
+                                  <Link
                                     href={item.href}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
@@ -135,7 +138,7 @@ export default function Example() {
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}
