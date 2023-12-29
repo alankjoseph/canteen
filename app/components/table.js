@@ -1,51 +1,6 @@
+import { useState } from "react";
 import DataTable from "react-data-table-component";
 
-// const columns = [
-//   {
-//     name: "Date",
-//     selector: (row) => row.date,
-//     sortable: true,
-//   },
-//   {
-//     name: "Outlet",
-//     selector: (row) => row.outlet,
-//     sortable: true,
-//   },
-//   {
-//     name: "Session",
-//     selector: (row) => row.session,
-//     sortable: true,
-//   },
-//   {
-//     name: "Ordered by",
-//     selector: (row) => row.ordered,
-//     sortable: true,
-//   },
-//   {
-//     name: "Amount",
-//     selector: (row) => row.amount,
-//     sortable: true,
-//   },
-// ];
-
-// const data = [
-//   {
-//     id: 1,
-//     date: "Beetlejuice",
-//     outlet: "1988",
-//     session: "Lunch",
-//     ordered: "You",
-//     amount: 34,
-//   },
-//   {
-//     id: 1,
-//     date: "Beetlejuice",
-//     outlet: "1988",
-//     session: "Lunch",
-//     ordered: "You",
-//     amount: 34,
-//   },
-// ];
 const customStyles = {
   
   head: {
@@ -59,6 +14,10 @@ const customStyles = {
 };
 
 export default function Table({columns,data}) {
+  const [search, setSearch] = useState('')
+  const onChangeHandler = (e)=>{
+    setSearch(e.target.value)
+  }
   return (
     <DataTable
       columns={columns}
@@ -73,7 +32,8 @@ export default function Table({columns,data}) {
           type="text"
           placeholder="Search"
           className="shadow appearance-none border rounded  py-2 px-3 leading-tight focus:outline-none focus:shadow-outline "
-          value={""}
+          value={search}
+          onChange={(e)=>onChangeHandler(e)}
         />
       }
     />

@@ -50,10 +50,26 @@ const data = [
 ];
 export default function Page() {
   const [buttonClick, setButtonClick] = useState(false);
+  const [error, setError]=useState('')
+  const [transactionDetails, setTransactionDetails] = useState({
+    from:"",
+    to:""
+  })
+  const {from, to} = transactionDetails
   const clickHandler = (e) => {
     e.preventDefault();
+    if(from.length==0 || to.length==0){
+      setError("Must fill all the field")
+      return
+    }else{
+      setError('')
+    }
     setButtonClick(!buttonClick);
   };
+  const onInputChange = (e)=>{
+    const { name, value } = e.target;
+    setTransactionDetails({ ...transactionDetails, [name]: value })
+  }
   return (
     <div className="min-h-full">
       <main className="mx-32 my-10">
@@ -64,12 +80,14 @@ export default function Page() {
                 htmlFor="date"
                 className="block text-gray-700 text-sm font-bold mb-2"
               >
-                Date:
+                From Date:
               </label>
               <input
                 type="date"
                 id="date"
-                name="date"
+                name="from"
+                value={from}
+                onChange={(e)=>onInputChange(e)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
             </div>
@@ -78,12 +96,14 @@ export default function Page() {
                 htmlFor="date"
                 className="block text-gray-700 text-sm font-bold mb-2"
               >
-                Date:
+                To Date:
               </label>
               <input
                 type="date"
                 id="date"
-                name="date"
+                name="to"
+                value={to}
+                onChange={(e)=>onInputChange(e)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
             </div>
@@ -96,6 +116,7 @@ export default function Page() {
               >
                 Search
               </button>
+              {error && <p className="text-center text-red-500">{error}</p>}
             </div>
           </form>
         </div>

@@ -11,11 +11,30 @@ export default function PlaceOrder() {
   const dispatch = useDispatch()
 
   const [buttonClick, setbuttonClick] = useState(false);
+  const [error, setError] = useState('')
+
   const [item, setItem] = useState('')
-  const sessions = ["--- Select One ---", "BreakFast", "Lunch", "Dinner"];
+  const [orderDetails, setOrderDetails] = useState({
+    date :'',
+    session: ''
+  })
+  const {date, session} = orderDetails
+  
+  const onInputChange =(e)=>{
+    const { name, value } = e.target;
+    setOrderDetails({ ...orderDetails, [name]: value });
+  }
+
   
   const clickHandler = (e) => {
     e.preventDefault();
+    if(data.length ==0 || session.length ==0){
+      setError('Must fill all the field')
+      return
+    }else{
+      setError('')
+    }
+    console.log(orderDetails);
     setbuttonClick(!buttonClick);
   };
 
@@ -24,6 +43,9 @@ export default function PlaceOrder() {
     dispatch(addItem(item))
    
   }
+
+  const sessions = ["--- Select One ---", "BreakFast", "Lunch", "Dinner"];
+
   const columns = [
     {
       name: "ID",
@@ -88,6 +110,8 @@ export default function PlaceOrder() {
                 type="date"
                 id="date"
                 name="date"
+                value={date}
+                onChange={(e)=>onInputChange(e)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
             </div>
@@ -102,6 +126,8 @@ export default function PlaceOrder() {
                 id="session"
                 name="session"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                value={session}
+                onChange={(e)=>onInputChange(e)}
               >
                 {sessions.map((session, index) => (
                   <option key={index} value={session}>
@@ -118,6 +144,7 @@ export default function PlaceOrder() {
               >
                 Search
               </button>
+              {error && <p className="text-center text-red-500">{error}</p>}
             </div>
           </form>
         </div>
