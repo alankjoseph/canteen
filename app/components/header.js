@@ -1,5 +1,5 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -17,12 +17,6 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 
-// const userNavigation = [
-//   { name: "Your Profile", href: "#" },
-//   { name: "Settings", href: "#" },
-//   { name: "Sign out", href: "#" },
-// ];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -32,6 +26,12 @@ export default function Example() {
 
   const isOnAdminPage = currentPath.startsWith("/admin");
   const isOnSuperAdminPage = currentPath.startsWith("/super-admin");
+  const isLogin = currentPath.startsWith("/login");
+  const [isLoginPath, setIsLoginPath] = useState(false);
+
+  useEffect(() => {
+    setIsLoginPath(true);
+  }, [isLogin]);
 
   const userNavigation = [
     { name: "Dashboard", link: "/", current: false },
@@ -44,6 +44,8 @@ export default function Example() {
     { name: "Stock", link: "/admin/stock", current: false },
   ];
   const superAdmin = [{ title: "super admin" }, { addUser: "Add-user" }];
+
+  
   let navigation = isOnAdminPage ? adminNavigation : userNavigation;
 
   navigation.forEach((item) => {
@@ -56,6 +58,7 @@ export default function Example() {
 
   return (
     <>
+      { isLogin ? " " :
       <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
@@ -231,6 +234,7 @@ export default function Example() {
           )}
         </Disclosure>
       </div>
+      }
     </>
   );
 }
