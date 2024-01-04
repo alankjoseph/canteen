@@ -175,13 +175,13 @@ function Cart() {
                       </div>
                       <div className="flex justify-between mb-2">
                         <span>Taxes</span>
-                        <span>₹{tax}</span>
+                        <span>₹{(tax.toFixed(2))}</span>
                       </div>
 
                       <hr className="my-2" />
                       <div className="flex justify-between mb-2">
                         <span className="font-semibold">Total</span>
-                        <span className="font-semibold">₹{totalCost+tax}</span>
+                        <span className="font-semibold">₹{(totalCost+tax).toFixed(2)}</span>
                       </div>
                       <button className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full">
                         Checkout
