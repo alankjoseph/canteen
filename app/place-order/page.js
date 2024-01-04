@@ -1,50 +1,111 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/app/components/header";
 import Table from "@/app/components/table";
 
-import {useDispatch} from "react-redux"
+import { useDispatch } from "react-redux";
 import { addItem } from "../features/cart/cartSlice";
+import axios from "axios";
+import Spinner from "../components/spinner";
 
 export default function PlaceOrder() {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const [buttonClick, setbuttonClick] = useState(false);
-  const [error, setError] = useState('')
-
-  const [item, setItem] = useState('')
+  const [error, setError] = useState("");
+  const [itemDetails, setItemDetails] = useState([]);
+  const [isloading, setIsLoading] = useState(true);
+  const [addItem, setAddItem] = useState([]);
   const [orderDetails, setOrderDetails] = useState({
-    date :'',
-    session: ''
-  })
-  const {date, session} = orderDetails
-  
-  const onInputChange =(e)=>{
+    date: "",
+    category: "",
+  });
+  const { date, category } = orderDetails;
+
+  const onInputChange = (e) => {
     const { name, value } = e.target;
     setOrderDetails({ ...orderDetails, [name]: value });
-  }
-
-  
-  const clickHandler = (e) => {
-    e.preventDefault();
-    if(data.length ==0 || session.length ==0){
-      setError('Must fill all the field')
-      return
-    }else{
-      setError('')
-    }
-    console.log(orderDetails);
-    setbuttonClick(!buttonClick);
   };
 
-  const addItemToCart = (item)=>{
-    
-    dispatch(addItem(item))
-   
-  }
+  const fetchItems = async () => {
+    const res = await axios.get(
+      "https://lionfish-app-bihwo.ondigitalocean.app/api/items/category/" +
+        category.toLowerCase(),
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
 
-  const sessions = ["--- Select One ---", "BreakFast", "Lunch", "Dinner"];
+    setItemDetails(res.data);
+    setIsLoading(false);
+  };
+
+  const clickHandler = (e) => {
+    e.preventDefault();
+    if (date.length == 0 || category.length == 0) {
+      setError("Must fill all the field");
+      return;
+    } else {
+      setError("");
+    }
+    fetchItems();
+    setbuttonClick(true);
+  };
+
+  const addItemToCart = async (item) => {
+    
+    const cartItem = {
+      item_id: item.id,
+      name: item.name,
+      userId: localStorage.getItem("userId"),
+      quantity: 1,
+      price: item.price,
+      category:category
+    };
+    const res = await axios.post("https://lionfish-app-bihwo.ondigitalocean.app/api/cart",cartItem,{
+      headers:{
+        Authorization: localStorage.getItem("token")
+      }
+    })
+    console.log(res)
+    // const cartItem = {
+    //   item_id: itemId,
+    //   quantity: 1,
+    // };
+    // setAddItem((prevItems) => [...prevItems, cartItem]);
+    // dispatch(addItem(item));
+  };
+
+  const placeOrderHandler = async (cartItem) => {
+    const item = {
+      category: category,
+      userId: localStorage.getItem("userId"),
+      items: addItem,
+    };
+    const res = await axios.post(
+      "https://lionfish-app-bihwo.ondigitalocean.app/api/orders/add",
+      item,
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    console.log(res.data);
+  };
+  useEffect(() => {
+    console.log(addItem);
+  }, [addItem]);
+
+  const sessions = [
+    "--- Select One ---",
+    "BreakFast",
+    "Lunch",
+    "Dinner",
+    "Snacks",
+  ];
 
   const columns = [
     {
@@ -54,46 +115,33 @@ export default function PlaceOrder() {
     },
     {
       name: "Item",
-      selector: (row) => row.Item,
+      selector: (row) => row.name,
       sortable: true,
     },
     {
       name: "Price",
-      selector: (row) => row.Price,
+      selector: (row) => row.price,
       sortable: true,
     },
     {
       name: "Availability",
-      selector: (row) => row.Availability,
+      selector: (row) => row.quantity,
       sortable: true,
     },
-    
+
     {
       name: "Action",
       cell: (row) => (
-        <button className="bg-[#f2c138] h-8 w-14 text-base text-white font-semibold rounded" onClick={()=>addItemToCart(row.Item)}>
+        <button
+          className="bg-[#40f57d] h-8 w-14 text-sm text-black font-normal rounded"
+          onClick={() => addItemToCart(row)}
+        >
           Add
         </button>
       ),
     },
   ];
 
-  const data = [
-    {
-      id: 1,
-      Item: "Rice and curry",
-      Price: "30",
-      Availability: "10",
-      Quantity: "1",
-    },
-    {
-      id: 2,
-      Item: "Ayala Fry",
-      Price: "40",
-      Availability: "10",
-      Quantity: "1",
-    },
-  ];
   return (
     <div className="min-h-full">
       <main className="mx-32 my-10">
@@ -111,7 +159,7 @@ export default function PlaceOrder() {
                 id="date"
                 name="date"
                 value={date}
-                onChange={(e)=>onInputChange(e)}
+                onChange={(e) => onInputChange(e)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
             </div>
@@ -123,11 +171,11 @@ export default function PlaceOrder() {
                 Session:
               </label>
               <select
-                id="session"
-                name="session"
+                id="category"
+                name="category"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                value={session}
-                onChange={(e)=>onInputChange(e)}
+                value={category}
+                onChange={(e) => onInputChange(e)}
               >
                 {sessions.map((session, index) => (
                   <option key={index} value={session}>
@@ -148,9 +196,25 @@ export default function PlaceOrder() {
             </div>
           </form>
         </div>
-        <div className="pl-[10%] pr-[10%] my-10">
-          {buttonClick && <Table columns={columns} data={data} />}
-        </div>
+        {buttonClick && (
+          <div className="pl-[10%] pr-[10%] my-10">
+            {isloading ? (
+              <Spinner />
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={placeOrderHandler}
+                  class="float-right text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:bg-gradient-to-br  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                >
+                  Place Order
+                </button>
+
+                <Table columns={columns} data={itemDetails} />
+              </>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );

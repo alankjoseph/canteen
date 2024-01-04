@@ -21,6 +21,7 @@ export default function Login() {
     console.log(res.data)
     if(res.status===200){
         localStorage.setItem("token", `Bearer ${res.data.accessToken}`)
+        localStorage.setItem("userId",res.data.userId)
         router.push("/")
     }else{
         setError("Invalid user credentials")
@@ -30,6 +31,7 @@ export default function Login() {
     const { name, value } = e.target;
     setuserDetails({ ...userDetails, [name]: value });
   };
+  
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">

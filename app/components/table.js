@@ -13,11 +13,8 @@ const customStyles = {
   
 };
 
-export default function Table({columns,data}) {
-  const [search, setSearch] = useState('')
-  const onChangeHandler = (e)=>{
-    setSearch(e.target.value)
-  }
+export default function Table({columns,data }) {
+  
   return (
     <DataTable
       columns={columns}
@@ -26,16 +23,7 @@ export default function Table({columns,data}) {
       customStyles={customStyles}
       highlightOnHover
       fixedHeader
-      subHeader
-      subHeaderComponent={
-        <input
-          type="text"
-          placeholder="Search"
-          className="shadow appearance-none border rounded  py-2 px-3 leading-tight focus:outline-none focus:shadow-outline "
-          value={search}
-          onChange={(e)=>onChangeHandler(e)}
-        />
-      }
+      
     />
   );
 }

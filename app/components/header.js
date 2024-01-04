@@ -9,7 +9,8 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname,useRouter } from "next/navigation";
+
 const user = {
   name: "Tom Cook",
   email: "tom@example.com",
@@ -23,6 +24,7 @@ function classNames(...classes) {
 
 export default function Example() {
   const currentPath = usePathname();
+  const router = useRouter()
 
   const isOnAdminPage = currentPath.startsWith("/admin");
   const isOnSuperAdminPage = currentPath.startsWith("/super-admin");
@@ -55,7 +57,11 @@ export default function Example() {
       item.current = false;
     }
   });
-
+  const handleLogout =()=>{
+    localStorage.removeItem("token")
+    localStorage.removeItem("userId")
+    router.push("/login")
+  }
   return (
     <>
       { isLogin ? " " :
@@ -110,15 +116,8 @@ export default function Example() {
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                            <span className="absolute -inset-1.5" />
-                            <span className="sr-only">Open user menu</span>
-                            <img
-                              className="h-8 w-8 rounded-full"
-                              src={user.imageUrl}
-                              alt=""
-                            />
-                          </Menu.Button>
+                        <button onClick={handleLogout} type="button" className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Logout</button>
+
                         </div>
                         <Transition
                           as={Fragment}

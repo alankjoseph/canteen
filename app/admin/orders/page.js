@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 export default function page() {
   const [orders, setOrders] = useState([]);
+  const [orderDetails, setOrderDetails] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tableHead = [
@@ -15,10 +16,27 @@ export default function page() {
     "Status",
     "Action",
   ];
+  const orderDetailsHeader = [
+    "Item ID",
+    "Item Name",
+    "Quantity",
+    "Price",
+    "Action"
+  ]
+  const fetchOrderDetails =async (id)=>{
+    const res =  await axios.get("https://lionfish-app-bihwo.ondigitalocean.app/api/orders/"+id,{
+      headers:{
+        Authorization: localStorage.getItem("token")
+      }
+    })
+    
+    setOrderDetails(res.data.items)
+  }
 
   const openDetails = (id) => {
-    console.log(id);
+    
     setIsModalOpen(true);
+    fetchOrderDetails(id)
   };
   const fetchOrders = async () => {
     const res = await axios.get(
@@ -35,6 +53,7 @@ export default function page() {
         const { id, user_id, category, date, status } = item;
         return { id, user_id, category, date, status };
       });
+      
       setOrders(extractedData);
     }
   };
@@ -94,7 +113,7 @@ export default function page() {
           </table>
           {isModalOpen && (
             <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-8 rounded-lg w-[400px] relative">
+              <div className="bg-white p-8 rounded-lg w-auto relative">
                 <button
                   onClick={() => setIsModalOpen(false)} // Close the modal when clicked
                   className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -114,8 +133,56 @@ export default function page() {
                     />
                   </svg>
                 </button>
-                <h2 className="text-lg font-bold mb-4">This is a modal</h2>
-                {/* Additional content for the modal */}
+                <h2 className="text-lg font-bold mb-4">Order Details</h2>
+                <table className="w-full text-sm text-left text-black border border-collapse border-gray-700">
+                  <thead className="text-xs text-black uppercase bg-[#c3edfa]">
+                    <tr>
+                      {orderDetailsHeader.map((title, index) => (
+                        <th
+                          key={index}
+                          scope="col"
+                          className="px-6 py-3 border border-gray-500"
+                        >
+                          {title}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+
+                  <tbody className="bg-green-100 text-black">
+                    {orderDetails.map((row, index) => (
+                      <tr key={index}>
+                        <td className="px-6 py-4 border border-gray-500">
+                          {row.items.id}
+                        </td>
+                        <td className="px-6 py-4 border border-gray-500">
+                          {row.items.name}
+                        </td>
+                        <td className="px-6 py-4 border border-gray-500">
+                          {row.quantity}
+                        </td>
+                        <td className="px-6 py-4 border border-gray-500">
+                          {row.items.price}
+                        </td>
+                        
+                        <td className="px-6 py-4 border border-gray-500 ">
+                          <button
+                            className="bg-green-500 text-black px-4 py-2 rounded-md mx-2"
+                            onClick={() => openDetails(row.id)}
+                          >
+                            {"Edit"}
+                          </button>
+                          <button
+                            className="bg-green-500 text-black px-4 py-2 rounded-md mx-2"
+                            onClick={() => openDetails(row.id)}
+                          >
+                            {"Cancel"}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
