@@ -3,7 +3,7 @@ import Spinner from "@/app/components/spinner";
 import Table from "@/app/components/table";
 import axios from "axios";
 import { useEffect, useState } from "react";
-export default function page() {
+export default function Page() {
   const [orders, setOrders] = useState([]);
   const [orderDetails, setOrderDetails] = useState([])
   const [isLoading, setIsLoading] = useState(true);
