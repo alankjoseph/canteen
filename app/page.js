@@ -4,8 +4,10 @@ import Header from "@/app/components/header";
 import Card from "@/app/components/card";
 import LineChart from "@/app/components/lineChart";
 import PieChartPage from "@/app/components/piechart";
+import { useRouter } from 'next/navigation';
+import { useEffect } from "react";
 
-export default function Home() {
+ function Home() {
   const items = [
     { name: "Today's Expense", value: "₹ 453" },
     { name: "Monthly Expense", value: "₹ 453" },
@@ -13,6 +15,10 @@ export default function Home() {
     { name: "Monthly Transaction", value: "30" },
   ];
 
+  
+  
+  
+  
   
   return (
     <div className="min-h-full">
@@ -42,3 +48,4 @@ export default function Home() {
     </div>
   );
 }
+export default Home

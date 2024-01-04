@@ -1,19 +1,21 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Spinner from "../components/spinner";
-import {
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 function Cart() {
+  const router = useRouter();
   const cartStore = useSelector((state) => state.cartStore);
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalCost, setTotalCost] = useState(0);
   const [tax, setTax] = useState(0);
+  const [redirectUrl, setRedirectUrl] = useState("");
 
   const [quantity, setQuantity] = useState(1);
   const fetchItems = async () => {
@@ -45,7 +47,9 @@ function Cart() {
       return item;
     });
     setCartItems(updatedCartItems);
+    updateQuantity(cartItems);
   };
+
   const handleIncrement = (itemId) => {
     const updatedCartItems = cartItems.map((item) => {
       if (item.id === itemId) {
@@ -54,6 +58,19 @@ function Cart() {
       return item;
     });
     setCartItems(updatedCartItems);
+    updateQuantity(cartItems);
+  };
+  const updateQuantity = async (data) => {
+    const res = await axios.put(
+      `https://lionfish-app-bihwo.ondigitalocean.app/api/cart`,
+      data,
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    console.log(res);
   };
   useEffect(() => {
     // Calculate total cost when cartItems change
@@ -63,18 +80,37 @@ function Cart() {
     setTotalCost(sum);
     setTax(sum * 0.05);
   }, [cartItems]);
-  const handleDelete = async(id)=>{
+  const handleDelete = async (id) => {
     console.log(id);
-    const userId = localStorage.getItem("userId")
-    const res = await axios.delete(`https://lionfish-app-bihwo.ondigitalocean.app/api/cart?user_id=${userId}&item_id=${id}`,{
-      headers:{
-        Authorization: localStorage.getItem("token")
+    const userId = localStorage.getItem("userId");
+    const res = await axios.delete(
+      `https://lionfish-app-bihwo.ondigitalocean.app/api/cart?user_id=${userId}&item_id=${id}`,
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
       }
-    })
+    );
     console.log(res);
-    fetchItems()
-  }
+    fetchItems();
+  };
 
+  const handleCheckout = async () => {
+    const data = [];
+    const res = await axios.get(
+      "https://lionfish-app-bihwo.ondigitalocean.app/api/cart/checkout?user_id=" +
+        userId,
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+
+    setRedirectUrl(res.data.url);
+
+    router.push(res.data.url);
+  };
   return (
     <div className="min-h-full">
       <main className="mx-32 my-10">
@@ -125,13 +161,11 @@ function Cart() {
                         </thead>
                         <tbody>
                           {cartItems.map((item, index) => (
-                            
                             <tr key={index}>
                               <td className="py-4">
                                 <div className="flex items-center">
                                   <span className="font-semibold">
                                     {item.name}
-                                    
                                   </span>
                                 </div>
                               </td>
@@ -155,11 +189,15 @@ function Cart() {
                                   </button>
                                 </div>
                               </td>
-                              <td className="py-4" onClick={()=>handleDelete(item.item_id)}><TrashIcon height={"20px"}/></td>
+                              <td
+                                className="py-4"
+                                onClick={() => handleDelete(item.item_id)}
+                              >
+                                <TrashIcon height={"20px"} />
+                              </td>
                               <td className="py-4">
                                 ₹{item.price * item.quantity}
                               </td>
-                              
                             </tr>
                           ))}
                         </tbody>
@@ -175,15 +213,20 @@ function Cart() {
                       </div>
                       <div className="flex justify-between mb-2">
                         <span>Taxes</span>
-                        <span>₹{(tax.toFixed(2))}</span>
+                        <span>₹{tax.toFixed(2)}</span>
                       </div>
 
                       <hr className="my-2" />
                       <div className="flex justify-between mb-2">
                         <span className="font-semibold">Total</span>
-                        <span className="font-semibold">₹{(totalCost+tax).toFixed(2)}</span>
+                        <span className="font-semibold">
+                          ₹{(totalCost + tax).toFixed(2)}
+                        </span>
                       </div>
-                      <button className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full">
+                      <button
+                        className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full"
+                        onClick={handleCheckout}
+                      >
                         Checkout
                       </button>
                     </div>
