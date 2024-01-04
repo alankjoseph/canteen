@@ -124,9 +124,9 @@ function Cart() {
                           </tr>
                         </thead>
                         <tbody>
-                          {cartItems.map((item) => (
+                          {cartItems.map((item, index) => (
                             
-                            <tr>
+                            <tr key={index}>
                               <td className="py-4">
                                 <div className="flex items-center">
                                   <span className="font-semibold">

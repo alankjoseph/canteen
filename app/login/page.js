@@ -112,7 +112,7 @@ export default function Login() {
               </button>
              {error.length !=0 && <p className="text-center text-red-500">{error}</p> }
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don't have an account yet?{" "}
+               {" Don't have an account yet? "}
                 <a
                   href="#"
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"

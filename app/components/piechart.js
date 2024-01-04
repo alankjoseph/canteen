@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Chart } from "chart.js";
 
-function piechart() {
+function Piechart() {
   useEffect(() => {
     var ctx = document.getElementById("pieChart").getContext("2d");
     var pieChart = new Chart(ctx, {
@@ -36,4 +36,4 @@ function piechart() {
   );
 }
 
-export default piechart;
+export default Piechart;
