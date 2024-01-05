@@ -38,7 +38,7 @@ function Cart() {
     if (userId) {
       fetchItems();
     }
-  }, [userId]);
+  }, []);
   const handleDecrement = (itemId) => {
     const updatedCartItems = cartItems.map((item) => {
       if (item.id === itemId && item.quantity > 1) {
