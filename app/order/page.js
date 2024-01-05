@@ -38,7 +38,7 @@ export default function Page() {
         { isLoading ? <Spinner/> :
         items.length == 0 ? (
           <p className="text-center text-5xl font-semibold">
-            You have't ordered any items for today
+          { " You haven't ordered any items for today"}
           </p>
         ) : (
           <div className="relative overflow-x-auto my-4">
