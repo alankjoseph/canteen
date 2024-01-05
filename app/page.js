@@ -5,19 +5,36 @@ import Card from "@/app/components/card";
 import LineChart from "@/app/components/lineChart";
 import PieChartPage from "@/app/components/piechart";
 import { useRouter } from 'next/navigation';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
  function Home() {
+  const [cartItem, setCartItem] = useState([])
   const items = [
-    { name: "Today's Expense", value: "₹ 453" },
-    { name: "Monthly Expense", value: "₹ 453" },
-    { name: "Today's Transaction", value: "4" },
-    { name: "Monthly Transaction", value: "30" },
+    { name: "Today's Expense", value: cartItem.length == 0 ? 0 : cartItem.dailySummary.totalAmount},
+    { name: "Monthly Expense", value: cartItem.length == 0 ? 0 : cartItem.monthlySummary.totalAmount },
+    { name: "Today's Transaction", value: cartItem.length == 0 ? 0 : cartItem.dailySummary.totalOrders },
+    { name: "Monthly Transaction", value: cartItem.length == 0 ? 0 : cartItem.monthlySummary.totalOrders },
   ];
+  
+  const user_id =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const fetchSummary = async()=>{
+    const res = await axios.get("https://lionfish-app-bihwo.ondigitalocean.app/api/orders/summary?user_id="+user_id,{
+      headers:{
+        Authorization:localStorage.getItem("token")
+      }
+    })
 
+    setCartItem(res.data)
+    console.log(res.data);
+
+  }
   
   
-  
+  useEffect(()=>{
+    fetchSummary()
+  },[])
   
   
   return (

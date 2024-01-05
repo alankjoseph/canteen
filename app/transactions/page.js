@@ -1,7 +1,9 @@
 "use client";
 import Header from "@/app/components/header";
 import Table from "@/app/components/table";
+import axios from "axios";
 import { useState } from "react";
+import Spinner from "../components/spinner";
 const columns = [
   {
     name: "Date",
@@ -9,18 +11,14 @@ const columns = [
     sortable: true,
   },
   {
-    name: "Outlet",
-    selector: (row) => row.outlet,
+    name: "Category",
+    selector: (row) => row.category,
     sortable: true,
   },
   {
-    name: "Session",
-    selector: (row) => row.session,
-    sortable: true,
-  },
-  {
-    name: "Ordered by",
-    selector: (row) => row.ordered,
+    name: "Item",
+    selector: (row) => row.item,
+    
     sortable: true,
   },
   {
@@ -30,40 +28,46 @@ const columns = [
   },
 ];
 
-const data = [
-  {
-    id: 1,
-    date: "Beetlejuice",
-    outlet: "1988",
-    session: "Lunch",
-    ordered: "You",
-    amount: 34,
-  },
-  {
-    id: 1,
-    date: "Beetlejuice",
-    outlet: "1988",
-    session: "Lunch",
-    ordered: "You",
-    amount: 34,
-  },
-];
 export default function Page() {
   const [buttonClick, setButtonClick] = useState(false);
   const [error, setError]=useState('')
+  const [items, setItems] = useState([])
+  const [isLoading,setIsLoading]= useState(true)
   const [transactionDetails, setTransactionDetails] = useState({
-    from:"",
-    to:""
+    start_date:"",
+    end_date:""
   })
-  const {from, to} = transactionDetails
+  console.log(transactionDetails);
+  const {start_date, end_date} = transactionDetails
+  const fetchTransaction =async()=>{
+    const data = {
+      start_date:start_date,
+      end_date: end_date,
+      user_id:localStorage.getItem("userId")
+    }
+    try {
+      const res = await axios.post("https://lionfish-app-bihwo.ondigitalocean.app/api/orders/transactions",data,{
+        headers:{
+          Authorization: localStorage.getItem("token")
+        }
+      })
+      setItems(res.data)
+      setIsLoading(false)
+    } catch (error) {
+      
+    }
+  }
+
+  
   const clickHandler = (e) => {
     e.preventDefault();
-    if(from.length==0 || to.length==0){
+    if(start_date.length==0 || end_date.length==0){
       setError("Must fill all the field")
       return
     }else{
       setError('')
     }
+    fetchTransaction()
     setButtonClick(!buttonClick);
   };
   const onInputChange = (e)=>{
@@ -84,9 +88,9 @@ export default function Page() {
               </label>
               <input
                 type="date"
-                id="date"
-                name="from"
-                value={from}
+                id="start_date"
+                name="start_date"
+                value={start_date}
                 onChange={(e)=>onInputChange(e)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
@@ -100,9 +104,9 @@ export default function Page() {
               </label>
               <input
                 type="date"
-                id="date"
-                name="to"
-                value={to}
+                id="end_date"
+                name="end_date"
+                value={end_date}
                 onChange={(e)=>onInputChange(e)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
@@ -121,7 +125,7 @@ export default function Page() {
           </form>
         </div>
         <div className="pl-[10%] pr-[10%] my-10">
-          {buttonClick && <Table columns={columns} data={data} />}
+          {items.length >0 && <Table columns={columns} data={items} />}
         </div>
       </main>
     </div>

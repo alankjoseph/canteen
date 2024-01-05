@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import { addItem } from "../features/cart/cartSlice";
 import axios from "axios";
 import Spinner from "../components/spinner";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function PlaceOrder() {
   const dispatch = useDispatch();
@@ -55,21 +57,36 @@ export default function PlaceOrder() {
   };
 
   const addItemToCart = async (item) => {
-    
     const cartItem = {
       item_id: item.id,
       name: item.name,
       userId: localStorage.getItem("userId"),
       quantity: 1,
       price: item.price,
-      category:category
+      category: category,
     };
-    const res = await axios.post("https://lionfish-app-bihwo.ondigitalocean.app/api/cart",cartItem,{
-      headers:{
-        Authorization: localStorage.getItem("token")
+    const res = await axios.post(
+      "https://lionfish-app-bihwo.ondigitalocean.app/api/cart",
+      cartItem,
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
       }
-    })
-    console.log(res)
+    );
+    if (res.status == 208) {
+      toast.warn("Item already exist", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    console.log(res);
     // const cartItem = {
     //   item_id: itemId,
     //   quantity: 1,
@@ -216,6 +233,7 @@ export default function PlaceOrder() {
           </div>
         )}
       </main>
+      <ToastContainer />
     </div>
   );
 }
