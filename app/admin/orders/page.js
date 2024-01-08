@@ -53,7 +53,7 @@ export default function Page() {
       })
       console.log(res);
       if(res.status === 200){
-        toast.success('🦄 Wow so easy!', {
+        toast.success('Item deleted successfully', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -72,7 +72,7 @@ export default function Page() {
   }
   const fetchOrders = async () => {
     const res = await axios.get(
-      "https://lionfish-app-bihwo.ondigitalocean.app/api/orders",
+      "https://lionfish-app-bihwo.ondigitalocean.app/api/orders/admin/today",
       {
         headers: {
           Authorization: localStorage.getItem("token"),

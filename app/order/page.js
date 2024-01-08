@@ -22,6 +22,7 @@ export default function Page() {
     setItems(res.data);
     setIsLoading(false)
     console.log(res.data);
+    
   };
   useEffect(() => {
     fetchItems();
@@ -45,6 +46,9 @@ export default function Page() {
             <table className="w-full text-sm text-left text-black border border-collapse border-gray-700">
               <thead className="text-xs text-black uppercase bg-[#c3edfa]">
                 <tr>
+                <th scope="col" className="px-6 py-3 border border-gray-500">
+                    Order ID
+                  </th>
                   <th scope="col" className="px-6 py-3 border border-gray-500">
                     Order Date
                   </th>
@@ -65,6 +69,9 @@ export default function Page() {
               <tbody className="bg-green-100 text-black">
                 {items.map((item, index) => (
                   <tr key={index}>
+                    <td className="px-6 py-4 border border-gray-500">
+                      {item.id}
+                    </td>
                     <td className="px-6 py-4 border border-gray-500">
                       {item.date}
                     </td>

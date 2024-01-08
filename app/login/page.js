@@ -25,6 +25,7 @@ export default function Login() {
       );
 
       if (res.status === 200) {
+        res.data
         localStorage.setItem("token", `Bearer ${res.data.accessToken}`);
         localStorage.setItem("userId", res.data.userId);
         router.push("/");

@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useDebugValue, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -25,16 +25,32 @@ function classNames(...classes) {
 export default function Example() {
   const currentPath = usePathname();
   const router = useRouter();
-
+  const [isAdmin, setIsAdmin] = useState(false)
   const isOnAdminPage = currentPath.startsWith("/admin");
   const isOnSuperAdminPage = currentPath.startsWith("/super-admin");
   const isLogin = currentPath.startsWith("/login");
+  const isSignin = currentPath.startsWith("/signup");
+  const [hideNav, setHideNav] = useState(false)
   const [isLoginPath, setIsLoginPath] = useState(false);
+  const [isSignupPath, setIsSignupPath] = useState(false)
   const [cartCount, setCartCount] = useState(3);
 
   useEffect(() => {
-    setIsLoginPath(true);
-  }, [isLogin]);
+    setIsLoginPath(currentPath.startsWith("/login"));
+    
+    
+  }, []);
+  useEffect(() => {
+    setIsSignupPath(currentPath.startsWith("/signup"));
+  
+  }, []);
+
+  useEffect(()=>{
+    setIsAdmin(currentPath.startsWith("/admin"))
+  },[])
+  useEffect(()=>{
+    console.log(isAdmin);
+  },[isAdmin])
 
   const userNavigation = [
     { name: "Dashboard", link: "/", current: false },
@@ -64,7 +80,7 @@ export default function Example() {
   };
   return (
     <>
-      {isLogin ? (
+      {isLogin || isSignin ? (
         " "
       ) : (
         <div className="min-h-full">
@@ -109,16 +125,17 @@ export default function Example() {
                             className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white "
                           >
                             <span className="absolute -inset-1.5" />
-                            <ShoppingCartIcon
+                            {isAdmin ? " ": <ShoppingCartIcon
                               className="h-6 w-6"
                               aria-hidden="true"
-                            />
+                            />  }
+                            
                             {/* Display cart count as a badge */}
-                            {cartCount > 0 && (
+                            {/* {cartCount > 0 && (
                               <span className="absolute top-0 right-0 bg-green-500 text-white rounded-full px-1 text-xs">
                                 {cartCount}
                               </span>
-                            )}
+                            )} */}
                           </button>
                         </Link>
                         {/* Profile dropdown */}
