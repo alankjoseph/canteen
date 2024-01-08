@@ -93,7 +93,7 @@ export default function Example() {
                       <div className="flex-shrink-0">
                         <img
                           className="h-10 w-18"
-                          src="https://flowbite.com/images/logo.svg"
+                          src="/manorama.jpg"
                           alt="Your Company"
                         />
                       </div>

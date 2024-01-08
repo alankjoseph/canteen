@@ -14,7 +14,6 @@ export default function Login() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      console.log(userDetails);
       if (usernameOrEmail.length == 0 || password.length == 0) {
         setError("All field are required");
         return null;
@@ -23,12 +22,17 @@ export default function Login() {
         "https://lionfish-app-bihwo.ondigitalocean.app/api/auth/login",
         userDetails
       );
-
+        
       if (res.status === 200) {
-        res.data
         localStorage.setItem("token", `Bearer ${res.data.accessToken}`);
-        localStorage.setItem("userId", res.data.userId);
-        router.push("/");
+          localStorage.setItem("userId", res.data.userId);
+        if(res.data.roles[0].name=="ROLE_ADMIN"){
+          
+          router.push("/admin");
+        }else{
+          router.push("/")
+        }
+        
       } else {
         setError("Invalid user credentials");
       }

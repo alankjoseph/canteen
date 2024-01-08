@@ -3,24 +3,30 @@ import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function Signin() {
   const [userDetails, setuserDetails] = useState({
     email: "",
     password: "",
-    username:"",
-    name:"",
-    personalNo:""
+    username: "",
+    name: "",
+    personalNo: "",
   });
   const [error, setError] = useState("");
-  const {  password, email, personalNo,username,name } = userDetails;
+  const { password, email, personalNo, username, name } = userDetails;
   const router = useRouter();
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       console.log(userDetails);
-      if (email.length == 0 || password.length == 0 || name.length ==0 || personalNo.length==0|| username.length==0) {
+      if (
+        email.length == 0 ||
+        password.length == 0 ||
+        name.length == 0 ||
+        personalNo.length == 0 ||
+        username.length == 0
+      ) {
         setError("All field are required");
         return null;
       }
@@ -28,21 +34,21 @@ export default function Signin() {
         "https://lionfish-app-bihwo.ondigitalocean.app/api/auth/register",
         userDetails
       );
-        console.log(res);
+      console.log(res);
       if (res.status === 200) {
         localStorage.setItem("token", `Bearer ${res.data.accessToken}`);
         localStorage.setItem("userId", res.data.userId);
         router.push("/login");
-        toast.success('User created successfully', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            });
+        toast.success("User created successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       } else {
         setError("Invalid user credentials");
       }
