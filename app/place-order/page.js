@@ -219,13 +219,13 @@ export default function PlaceOrder() {
               <Spinner />
             ) : (
               <>
-                <button
+                {/* <button
                   type="button"
                   onClick={placeOrderHandler}
                   class="float-right text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:bg-gradient-to-br  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                 >
                   Place Order
-                </button>
+                </button> */}
 
                 <Table columns={columns} data={itemDetails} />
               </>

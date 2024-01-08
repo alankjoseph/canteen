@@ -3,11 +3,14 @@ import Spinner from "@/app/components/spinner";
 import Table from "@/app/components/table";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function Page() {
   const [orders, setOrders] = useState([]);
   const [orderDetails, setOrderDetails] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [oderId,setOrderId] = useState('')
   const tableHead = [
     "Order ID",
     "User ID",
@@ -24,6 +27,7 @@ export default function Page() {
     "Action"
   ]
   const fetchOrderDetails =async (id)=>{
+    setOrderId(id)
     const res =  await axios.get("https://lionfish-app-bihwo.ondigitalocean.app/api/orders/"+id,{
       headers:{
         Authorization: localStorage.getItem("token")
@@ -38,6 +42,34 @@ export default function Page() {
     setIsModalOpen(true);
     fetchOrderDetails(id)
   };
+  const deleteOrder = async(id)=>{
+    console.log("order id from delete order"+oderId);
+    console.log(id);
+    try {
+      const res =await axios.put(`https://lionfish-app-bihwo.ondigitalocean.app/api/orders/order/delete-items?order_id=${oderId}&item_id=${id}`,null,{
+        headers:{
+          Authorization:localStorage.getItem("token")
+        }
+      })
+      console.log(res);
+      if(res.status === 200){
+        toast.success('🦄 Wow so easy!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+        fetchOrderDetails(oderId)
+      }
+    } catch (error) {
+      
+    }
+    
+  }
   const fetchOrders = async () => {
     const res = await axios.get(
       "https://lionfish-app-bihwo.ondigitalocean.app/api/orders",
@@ -174,7 +206,7 @@ export default function Page() {
                           </button>
                           <button
                             className="bg-green-500 text-black px-4 py-2 rounded-md mx-2"
-                            onClick={() => openDetails(row.id)}
+                            onClick={() => deleteOrder(row.items.id)}
                           >
                             {"Cancel"}
                           </button>
@@ -188,6 +220,7 @@ export default function Page() {
           )}
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }

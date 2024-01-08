@@ -13,19 +13,31 @@ function Home() {
   const items = [
     {
       name: "Today's Expense",
-      value: cartItem.length == 0 ? 0 : cartItem.dailySummary.totalAmount,
+      value:
+        cartItem.length === 0 || cartItem.dailySummary === null
+          ? 0
+          : cartItem.dailySummary.totalAmount,
     },
     {
       name: "Monthly Expense",
-      value: cartItem.length == 0 ? 0 : cartItem.monthlySummary.totalAmount,
+      value:
+        cartItem.length == 0 || cartItem.monthlySummary === null
+          ? 0
+          : cartItem.monthlySummary.totalAmount,
     },
     {
       name: "Today's Transaction",
-      value: cartItem.length == 0 ? 0 : cartItem.dailySummary.totalOrders,
+      value:
+        cartItem.length == 0 || cartItem.dailySummary === null
+          ? 0
+          : cartItem.dailySummary.totalOrders,
     },
     {
       name: "Monthly Transaction",
-      value: cartItem.length == 0 ? 0 : cartItem.monthlySummary.totalOrders,
+      value:
+        cartItem.length == 0 || cartItem.monthlySummary=== null
+          ? 0
+          : cartItem.monthlySummary.totalOrders,
     },
   ];
   const router = useRouter();
@@ -44,19 +56,18 @@ function Home() {
           },
         }
       );
-  
+
       setCartItem(res.data);
       console.log(res.data);
     } catch (error) {
       console.log("You must login to access the site");
     }
-    
   };
   useEffect(() => {
     if (!token) {
       router.push("/login");
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     fetchSummary();
