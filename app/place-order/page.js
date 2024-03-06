@@ -92,7 +92,7 @@ export default function PlaceOrder() {
     //   quantity: 1,
     // };
     // setAddItem((prevItems) => [...prevItems, cartItem]);
-    // dispatch(addItem(item));
+    dispatch(addItem(item));
   };
 
   const placeOrderHandler = async (cartItem) => {

@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const user = {
   name: "Tom Cook",
@@ -34,7 +35,8 @@ export default function Example() {
   const [isLoginPath, setIsLoginPath] = useState(false);
   const [isSignupPath, setIsSignupPath] = useState(false)
   const [cartCount, setCartCount] = useState(3);
-
+   
+  const cartItem = useSelector((state)=> state.cartStore)
   useEffect(() => {
     setIsLoginPath(currentPath.startsWith("/login"));
     
@@ -131,11 +133,11 @@ export default function Example() {
                             />  }
                             
                             {/* Display cart count as a badge */}
-                            {/* {cartCount > 0 && (
+                            {
                               <span className="absolute top-0 right-0 bg-green-500 text-white rounded-full px-1 text-xs">
-                                {cartCount}
+                                {cartItem.length}
                               </span>
-                            )} */}
+                            } 
                           </button>
                         </Link>
                         {/* Profile dropdown */}
